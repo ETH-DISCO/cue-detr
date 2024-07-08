@@ -1,4 +1,4 @@
-# CUE-DETR
+# CUE-DETR (repo work in progress)
 
 PAPER
 
