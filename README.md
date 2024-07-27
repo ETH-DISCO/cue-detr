@@ -1,11 +1,6 @@
 # CUE-DETR (repo work in progress)
 
-PAPER
-
-
-Model checkpoints
-
-
+[📜arXiv](https://www.arxiv.org/abs/2407.06823) | [🤗Dataset](https://huggingface.co/datasets/disco-eth/edm-cue) | 🤗Checkpoints (coming soon)
 
 ## Dataset
 
