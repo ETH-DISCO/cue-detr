@@ -29,10 +29,10 @@ def generate_images(tracks, mel_fft, mel_hop, audio_dir, image_dir):
         track_id = str(track['id'])
 
         # MFCC and save as RBG image
-        y, sr = librosa.load(audio_dir + track_id + '.mp3')  # standard sr of 22050
+        y, sr = librosa.load(os.path.join(audio_dir, track_id + '.mp3'))  # standard sr of 22050
         M = librosa.feature.melspectrogram(y=y, sr=22050, n_fft=mel_fft)
         M_db = librosa.power_to_db(M, ref=np.max)
-        plt.imsave(image_dir + track_id + '.png', M_db, origin='lower')
+        plt.imsave(os.path.join(image_dir, track_id + '.png'), M_db, origin='lower')
         img = {
             'id': img_id,
             'width': int(M_db.shape[1]),
@@ -83,7 +83,7 @@ def generate_images(tracks, mel_fft, mel_hop, audio_dir, image_dir):
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('-n', '--annotation_file',
-                    help='Name of annotation file (default: annotations.json).',
+                    help='Out: Name of annotation file (default: annotations.json).',
                     type=str, default='annotations.json')
     ap.add_argument('-d', '--dataset_file',
                     help='Name of dataset json-file for conversion.',
