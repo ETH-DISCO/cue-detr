@@ -1,14 +1,40 @@
-# CUE-DETR (repo work in progress)
+# CUE-DETR
 
 [📜Paper](https://www.arxiv.org/abs/2407.06823) | [🤗Dataset](https://huggingface.co/datasets/disco-eth/edm-cue) | [🤗Checkpoints](https://huggingface.co/disco-eth/cue-detr/tree/main)
 
 ## Dataset
 
-No audio provided, only references.
+[🤗Dataset](https://huggingface.co/datasets/disco-eth/edm-cue)
 
-CUE-DETR accepts data with annotations in a modified COCO format. The dataset contains a `'position'` parameter instead of `'bbox'` and `'area'` for annotations since bounding boxes will be computed during runtime. 
+***EDM-CUE*** contains metadata for almost 5k EDM tracks collected from 4 different DJs. No audio provided, only references to training data.
 
-* `preprocessing.py` converts audio into spectrograms including the custom COCO annotation file
+<details>
+<summary> Track Metadata </summary>
+
+```python
+{
+    'id': int,
+    'title': str,
+    'artists': str,
+    'duration': int,        # in seconds
+    'genre': [str],
+    'key': [str],           # alphanumeric (Camelot)
+    'beat_grid': {
+        'start_pos': float, # in seconds
+        'init_beat': int,   #  first beat count
+        'bpm': float,
+        'time_sig': str
+    },
+    'cue_pts': [float]      # in seconds
+}
+```
+</details>
+
+#### Training Format
+
+* CUE-DETR expects training data in a ***modified COCO format***: instead of `'bbox'` and `'area'` the model requires the `'position'` of each cue point annotation. The bounding box is computed during runtime with default width 21 pixels.
+
+* `preprocessing.py` converts audio into power spectrograms including the annotation file in the custom COCO format.
 
 <details>
 <summary> Custom COCO Format </summary>
@@ -41,21 +67,24 @@ data = {
 
 Uses W&B for logging. Connect to W&B account by running `wandb login` in the console and passing the projectname and account as arguments for training.
 
+See `cue_detr_train.py`, `cue_detr_data.py` and `cue_detr_model.py` in `model` directory.
+
 
 ## Dependencies
 
 Python 3.11.9, see `requirements.txt`.
 
 
-# Usage
+## Usage / Example Script
 
-The example script `cue_points.py` calculates cue points for tracks in a directory. Calculated cue points will be written to `_cue_points.txt` which is added to the audio directory. Note that as of now only mp3 files are supported.
+[🤗Checkpoints](https://huggingface.co/disco-eth/cue-detr/tree/main)
 
-The model checkpoint should be stored in a separate directory for which the path must also be passed as script argument.
+The example script `cue_points.py` calculates cue points for tracks stored in an audio directory. All calculated cue points will be written to `_cue_points.txt` which is added to the audio directory. It is also possible to run the script with a local checkpoint from a checkpoint directory. Note that as of now only mp3 files are supported.
 
 ```bash
-python cue_points.py -t path/to/audio/dir -c path/to/checkpoint/dir
+python cue_points.py -t path/to/audio/dir
 # Optional arguments:
+# -c (path/to/local/checkpoint/dir)
 # -s (prediction sensitivity)
 # -r (min distance between cues)
 # -p (toggle to print cue points)

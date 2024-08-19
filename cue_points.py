@@ -19,7 +19,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Predict cue points for one or more tracks using CUE-DETR.\
                 The resulting _cue_points.txt will be saved in the directory with all tracks.")
     parser.add_argument('-t', '--tracks', type=str, required=True, help="Path to track directory")
-    parser.add_argument('-c', '--checkpoint', type=str, required=True, help="Path to model checkpoint")
+    parser.add_argument('-c', '--checkpoint', type=str, default='disco-eth/cue-detr', help="Optional local path to model checkpoint")
     parser.add_argument('-s', '--sensitivity', type=float, default=0.9, help="Threshold value for cue points (default = 0.9)")
     parser.add_argument('-r', '--radius', type=int, default=16, help="Minimum distance in bars between cue points in bars (default = 16)")
     parser.add_argument('-p', '--print', action='store_true', help="Print cue points to console")
