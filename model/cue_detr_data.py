@@ -158,7 +158,7 @@ class CuePredictDataset(Dataset):
             img_folder (str):
                 path to the folder containing the images and `annotations.json`
             image_processor (DetrImageProcessor):
-                preprocesses images (normalize, pad, resieze, ...) and annotations
+                preprocesses images (normalize, pad, resize, ...) and annotations
         """
         assert os.path.exists(f'{img_folder}/annotations.json'), f'No `annotations.json` file found in {img_folder}'
         with open(f'{img_folder}/annotations.json', 'r') as f:

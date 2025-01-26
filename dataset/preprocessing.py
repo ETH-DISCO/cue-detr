@@ -3,15 +3,20 @@ import argparse
 
 from datetime import datetime
 from enum import IntEnum
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import librosa
 import json
+import os
+
 
 class Marker(IntEnum):
     CUE = 0
     BEAT = 1
     DBEAT = 2
+
 
 # COCO Data
 #BB_W = 3  # bounding box width = BB_W + 1 + BB_W = 7
@@ -19,8 +24,7 @@ class Marker(IntEnum):
 #BB_A = BB_H * (2 * BB_W + 1)
 
 
-def generate_images(tracks, mel_fft, mel_hop, audio_dir, image_dir):    
-    
+def generate_images(tracks, mel_fft, mel_hop, audio_dir, image_dir):
     images = []
     annotations = []
     annotation_id = 0
@@ -37,7 +41,7 @@ def generate_images(tracks, mel_fft, mel_hop, audio_dir, image_dir):
             'id': img_id,
             'width': int(M_db.shape[1]),
             'height': int(M_db.shape[0]),
-            'file_name' : track_id + '.png',
+            'file_name': track_id + '.png',
         }
         images.append(img)
 
@@ -53,7 +57,7 @@ def generate_images(tracks, mel_fft, mel_hop, audio_dir, image_dir):
                 #'bbox': [int(c - BB_W), 0, BB_W * 2 + 1, BB_H],
                 #'area': BB_A
             })
-            annotation_id+=1
+            annotation_id += 1
 
         '''
         # Beat Grid
@@ -77,7 +81,6 @@ def generate_images(tracks, mel_fft, mel_hop, audio_dir, image_dir):
             a.append(annotate(ann_id, i, Marker.DBEAT, db, bb_w, bb_h))
         '''
     return images, annotations
-
 
 
 if __name__ == '__main__':
@@ -105,11 +108,11 @@ if __name__ == '__main__':
                     type=str, default='None')
 
     args = ap.parse_args()
-    file_name = args.annotation_file
-    track_list = args.dataset
+    track_list = args.dataset_file
     dir_audio = args.audio_dir
     dir_images = args.image_dir
-    old_images = args.old_images
+    old_images = args.prev_images
+    file_name = Path(dir_images) / str(args.annotation_file)
 
     mel_fft = args.fft
     mel_hop = mel_fft // 4
@@ -120,7 +123,7 @@ if __name__ == '__main__':
     images, annotations = generate_images(tracks, mel_fft, mel_hop, dir_audio, dir_images)
 
     data = {
-        'info' : {
+        'info': {
             'description': 'MS COCO-like Dataset with Cue Point Annotations',
             'url': '',
             'version': '0.2',
@@ -128,12 +131,12 @@ if __name__ == '__main__':
             'contributor': args.contributor,
             'date_created': datetime.today().strftime('%Y-%m-%d')
         },
-        'images' : images,
+        'images': images,
         'annotations': annotations,
         'categories': [{
             'id': Marker.CUE,
             'name': 'cue',
-            'supercategory' : 'cue'
+            'supercategory': 'cue'
         }]
     }
 
